@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %} Contacts list {% endblock %}
+
+{% block content %}
+  {% for contacts in test_contacts %}
+    <h2>
+      {{ concact.name }}
+    </h2>
+  {% endfor %}
+{% endblock %}
