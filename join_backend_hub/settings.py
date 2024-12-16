@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'join_backend_hub',
+    'contacts_app',
 ]
 
 MIDDLEWARE = [

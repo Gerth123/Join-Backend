@@ -1,15 +1,10 @@
 from django.urls import path
-from .views import all_test_contacts_view, SingleTestTaskView, AllTestTasksView, \
-     SingleTestContactView, RedirectToSingleTestContact, RedirectToTestContact, RedirectToSingleTestTask, \
+from .views import SingleTestTaskView, AllTestTasksView, \
+      RedirectToSingleTestTask, \
      TestTaskContainerView, test_view_for_html
 
 
-urlpatterns = [
-    path("", RedirectToTestContact.as_view()),
-    path('single-test-contact/<int:contact_id>/', RedirectToSingleTestContact.as_view()),
-    path('single-test-contact/<slug:contact_slug>/',
-         SingleTestContactView.as_view(), name='single-test-contact'),
-    path('all-test-contacts/', all_test_contacts_view, name='all-test-contacts'),
+urlpatterns = [     
 
     path('all-test-tasks/', AllTestTasksView.as_view()),
     path('single-test-task/<int:section_id>/', TestTaskContainerView.as_view()),
