@@ -23,6 +23,6 @@ urlpatterns = [
     path('api/contacts/', include('contacts_app.api.urls')),
     # path('api/tasks/', include('tasks_app.api.urls')),
     # path('api/subtask/', include('subtask_app.api.urls')),
-    # path('api/auth/', include('users_auth_app.api.urls')),
-    # path('api-auth', include('rest_framework.urls')),
+    path('api/auth/', include('contacts_app.api.urls')),
+    path('api-auth', include('rest_framework.urls')),
 ]

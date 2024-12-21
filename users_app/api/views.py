@@ -9,7 +9,17 @@ from django.utils.text import slugify
 from django.urls import reverse
 from users_app.models import Contact
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
+from users_app.models import UserProfile
+from .serializers import UserProfileSerializer
 
+class UserProfileList(generics.ListCreateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+class UserProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
 
 class RedirectToContact(RedirectView):
     pattern_name = 'all-test-contacts'  # Hier dann all users

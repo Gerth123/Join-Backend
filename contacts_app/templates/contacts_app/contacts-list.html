@@ -1,0 +1,20 @@
+{% comment %} {% extends "base.html" %}
+
+{% block title %} Contacts list {% endblock %}
+
+{% block content %}
+  {% for contacts in object_list %}
+    <h2>
+      {{ contact.name }}
+    </h2>
+  {% endfor %}
+{% endblock %}  {% endcomment %}
+
+<h2>Contacts List</h2>
+<ul>
+    {% for contact in object_list %}
+     <li> {{ contact.name }} </li>
+     {% empty %}
+     <li>No contacts yet.</li>
+     {% endfor %}
+</ul>
