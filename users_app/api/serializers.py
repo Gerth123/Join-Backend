@@ -1,8 +1,9 @@
 from contacts_app.models import Contact
 from users_app.models import UserProfile
 from rest_framework import serializers
-from contacts_app.api.serializers import validate_no_html, ContactSerializer
+from contacts_app.api.serializers import ContactSerializer
 from django.contrib.auth.models import User
+from utils.validators import validate_no_html
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,5 +53,8 @@ class RegistrationSerializer(serializers.Serializer):
         repeated_pw = self.validated_data['repeated_password']
         if pw != repeated_pw:
             raise serializers.ValidationError("Passwords don't match.")
-        user = User.objects.create_user(self.validated_data['username'], self.validated_data['email'], pw)
-        return user
+        
+        account = User(username=self.validated_data['username'], email=self.validated_data['email'])
+        account.set_password(pw)
+        account.save()
+        return account
