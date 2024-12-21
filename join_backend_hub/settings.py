@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'join_backend_hub',
     'contacts_app',
+    'tasks_app',
 ]
 
 MIDDLEWARE = [

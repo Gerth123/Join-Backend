@@ -1,18 +1,20 @@
 from django.contrib import admin
-from .models import UserProfile, Contact, Task, Subtask
+from .models import UserProfile, Contact
+
 
 @admin.register(UserProfile)
 class UserAdmin(admin.ModelAdmin):
-    # Zeigt Felder des verknüpften Benutzers an
     list_display = ('get_username', 'get_email', 'phone', 'color')
     list_filter = ('phone', 'color')
     readonly_fields = ('get_username', 'get_email', 'color', 'get_tasks')
     prepopulated_fields = {'slug': ('phone',)}
 
     fieldsets = (
-        (None, {'fields': ('phone', 'slug')}),
+        (None, {'fields': ('phone', 'slug', 'contacts')}),
         ('Advanced options', {'classes': ('collapse',), 'fields': ('color',)}),
     )
+
+    filter_horizontal = ('contacts',)
 
     def get_username(self, obj):
         return obj.user.username
@@ -26,7 +28,7 @@ class UserAdmin(admin.ModelAdmin):
         return ", ".join([task.title for task in obj.tasks.all()])
     get_tasks.short_description = 'Tasks'
 
-# Registrierung der anderen Modelle
+
 admin.site.register(Contact)
-admin.site.register(Task)
-admin.site.register(Subtask)
+# admin.site.register(Task)
+# admin.site.register(Subtask)
