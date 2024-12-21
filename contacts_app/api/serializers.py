@@ -1,27 +1,17 @@
 from rest_framework import serializers
 from contacts_app.models import Contact
-
-def validate_no_html(value):
-        errors = []
-
-        if '<' in value:
-            errors.append('No HTML tag < allowed.')
-        if '>' in value:
-            errors.append('No HTML tag > allowed.')
-        if errors:
-            raise serializers.ValidationError(errors)
-        return value
+from utils.validators import validate_no_html
 
 class ContactSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(max_length=100, validators=[validate_no_html])
-    email = serializers.CharField(max_length=100, validators=[validate_no_html])
-    phone = serializers.CharField(max_length=15, validators=[validate_no_html])
-    color = serializers.CharField(max_length=7, validators=[validate_no_html])
-
     class Meta:
         model = Contact
         fields = ('id', 'name', 'email', 'phone', 'color')
+        extra_kwargs = {
+            'name': {'validators': [validate_no_html]},
+            'email': {'validators': [validate_no_html]},
+            'phone': {'validators': [validate_no_html]},
+            'color': {'validators': [validate_no_html]},
+        }
 
     def create(self, validated_data):
         return Contact.objects.create(**validated_data)
