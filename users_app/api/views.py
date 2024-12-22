@@ -1,18 +1,8 @@
-from django.shortcuts import render
-from django.utils.text import slugify
-from django.views import View
-from django.views.generic.base import RedirectView
-import json
-from django.http import JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
-from django.utils.text import slugify
-from django.urls import reverse
-from users_app.models import Contact
 from rest_framework import generics
 from users_app.models import UserProfile
 from .serializers import *
 from rest_framework.views import APIView
-from users_app.dummy_data import test_contacts, test_tasks
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -46,7 +36,7 @@ class RegistrationView(APIView):
         return Response(data)
 
 class CustomLoginView(ObtainAuthToken):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         token = request.data.get('token')
