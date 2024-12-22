@@ -6,6 +6,7 @@ class Contact(models.Model):
     email = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     color = models.CharField(max_length=7)
+    user = models.ForeignKey('users_app.UserProfile', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Contact'

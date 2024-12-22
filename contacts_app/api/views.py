@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from users_app.dummy_data import test_contacts, test_tasks
+from users_app.models import UserProfile
 from django.utils.text import slugify
 from django.views import View
 from django.views.generic.base import RedirectView
@@ -15,7 +16,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ContactSerializer
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from .permissions import IsStaffOrReadOnly, IsAdminForDeleteOrPatchAndReadOnly, IsOwnerOrAdmin
 
 
@@ -27,9 +28,13 @@ def all_contacts(request):
         return Response(serializer.data)
 
     if request.method == 'POST':
-        serializer = ContactSerializer(data=request.data)
+        user_profile = UserProfile.objects.get(user=request.user)
+        data = request.data.copy() 
+        data['user'] = user_profile.id  
+        serializer = ContactSerializer(data=data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            contact = serializer.save(user=user_profile)
+            user_profile.contacts.add(contact)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
