@@ -5,7 +5,7 @@ from utils.validators import validate_no_html
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ('id', 'name', 'email', 'phone', 'color')
+        fields = ('id', 'name', 'email', 'phone', 'color', 'user_id')
         extra_kwargs = {
             'name': {'validators': [validate_no_html]},
             'email': {'validators': [validate_no_html]},

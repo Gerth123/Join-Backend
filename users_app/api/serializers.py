@@ -17,7 +17,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = '__all__'
+        exclude = ('user',)
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -95,34 +95,35 @@ class RegistrationSerializer(serializers.Serializer):
                 name=contact_data['name'],
                 email=contact_data['email'],
                 phone=contact_data['phone'],
-                color=contact_data['color']
+                color=contact_data['color'],
+                user_id = user.id
             )
             user_profile.contacts.add(contact)
 
-        for task_group in test_tasks:
-            for task_data in task_group['items']:
-                category_name = task_data['category'] 
+        # for task_group in test_tasks:
+        #     for task_data in task_group['items']:
+        #         category_name = task_data['category'] 
         
-                category, created = Category.objects.get_or_create(
-                    name=category_name
-                )
+        #         category, created = Category.objects.get_or_create(
+        #             name=category_name
+        #         )
 
-                task = Task.objects.create(
-                    title=task_data['title'],
-                    description=task_data['description'],
-                    category=category, 
-                    date=task_data['date'],
-                    priority=task_data['priority']
-                )
+        #         task = Task.objects.create(
+        #             title=task_data['title'],
+        #             description=task_data['description'],
+        #             category=category, 
+        #             date=task_data['date'],
+        #             priority=task_data['priority']
+        #         )
         
-                for subtask in task_data.get('subtasks', []):
-                    subtask_instance = Subtask.objects.create(
-                        task=task, 
-                        title=subtask['task'],
-                        checked=subtask['checked']
-                    )
+        #         for subtask in task_data.get('subtasks', []):
+        #             subtask_instance = Subtask.objects.create(
+        #                 task=task, 
+        #                 title=subtask['task'],
+        #                 checked=subtask['checked']
+        #             )
         
-                user_profile.tasks.add(task)
+        #         user_profile.tasks.add(task)
                 # for assigned_user_data in task_data['assigned']:
                 #     user_profile = UserProfile.objects.get(name=assigned_user_data['name'])
         return user
