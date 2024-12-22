@@ -9,13 +9,14 @@ from django.urls import reverse
 from users_app.models import Contact
 from rest_framework import generics
 from users_app.models import UserProfile
-from .serializers import UserProfileSerializer, RegistrationSerializer
+from .serializers import *
 from rest_framework.views import APIView
 from users_app.dummy_data import test_contacts, test_tasks
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework import status
 
 class UserProfileList(generics.ListCreateAPIView):
     queryset = UserProfile.objects.all()
@@ -48,21 +49,33 @@ class CustomLoginView(ObtainAuthToken):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        token = request.data.get('token')
 
-        data = {}
+        if token:
+            try:
+                token_obj = Token.objects.get(key=token)
+                user = token_obj.user
+                return Response({
+                    'token': token_obj.key,
+                    'username': user.username,
+                    'email': user.email,
+                    'user_id': user.id
+                })
+            except Token.DoesNotExist:
+                return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = EmailAuthTokenSerializer(data=request.data)
+
         if serializer.is_valid():
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
-            data = {
+            return Response({
                 'token': token.key,
                 'username': user.username,
                 'email': user.email,
-            }
-        else:
-            data = serializer.errors
-
-        return Response(data)
+                'user_id': user.id
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

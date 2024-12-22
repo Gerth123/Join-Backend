@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from utils.validators import validate_no_html
 from users_app.dummy_data import test_contacts, test_tasks
 from tasks_app.models import *
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -124,3 +126,28 @@ class RegistrationSerializer(serializers.Serializer):
                 # for assigned_user_data in task_data['assigned']:
                 #     user_profile = UserProfile.objects.get(name=assigned_user_data['name'])
         return user
+    
+
+class EmailAuthTokenSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        if email and password:
+            try:
+                user = User.objects.get(email=email)
+                username = user.username 
+            except User.DoesNotExist:
+                raise serializers.ValidationError("Benutzer mit dieser E-Mail existiert nicht.")
+
+            user = authenticate(username=username, password=password)
+            if not user:
+                raise serializers.ValidationError("Ungültige Anmeldedaten.")
+        else:
+            raise serializers.ValidationError("E-Mail und Passwort sind erforderlich.")
+
+        attrs['user'] = user
+        return attrs
