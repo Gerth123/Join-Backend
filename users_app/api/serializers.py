@@ -18,7 +18,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        exclude = ('user',)
+        exclude = ['user']
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -87,13 +87,13 @@ class RegistrationSerializer(serializers.Serializer):
 
                 for assigned_data in task_data.get('assigned', []):
                     try:
-                        assigned_user_profile = UserProfile.objects.get(user__username=assigned_data['name'])
-                    except UserProfile.DoesNotExist:
+                        assigned_contact_profile = Contact.objects.get(user__username=assigned_data['name'])
+                    except Contact.DoesNotExist:
                         continue  
 
-                    AssignedUser.objects.create(
+                    AssignedContact.objects.create(
                         task=task,
-                        user_profile=assigned_user_profile,
+                        contact=assigned_contact_profile,
                         color=assigned_data['color']
                     )
 
