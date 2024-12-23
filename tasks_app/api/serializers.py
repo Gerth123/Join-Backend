@@ -11,7 +11,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'category', 'date', 'priority', 'assigned', 'subtasks']
+        fields = '__all__'
 
     def create(self, validated_data):
         task = Task.objects.create(**validated_data)

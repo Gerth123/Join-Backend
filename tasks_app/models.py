@@ -21,12 +21,20 @@ class Task(models.Model):
         ('user story', 'User Story'),
         ('technical task', 'Technical Task'),
     ]
+    STATUS_CHOICES = [
+        (0, 'To Do'),
+        (1, 'In Progress'),
+        (2, 'Await Feedback'),
+        (3, 'Done'),
+    ]
     title = models.CharField(max_length=200)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date = models.DateField()
     priority = models.CharField(max_length=50, choices=[('low', 'Low'), ('medium', 'Medium'), ('urgent', 'Urgent')])
     assigned = models.ManyToManyField('AssignedUserProfile', through='AssignedUser', related_name='tasks')
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+    user = models.ForeignKey('users_app.UserProfile', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

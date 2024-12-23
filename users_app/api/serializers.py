@@ -29,52 +29,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(max_length=15, validators=[validate_no_html])
     color = serializers.CharField(max_length=7, validators=[validate_no_html])
     contacts = ContactSerializer(many=True, read_only=True)
+    tasks = TaskSerializer(many=True, read_only=True)
 
     class Meta:
         model = UserProfile
         fields = ['id', 'name', 'email', 'phone', 'color', 'contacts']
 
-#     def validate_contacts(self, value):
-#         contacts = Contact.objects.filter(id__in=value)
-#         if len(contacts) != len(set(value)):
-#             raise serializers.ValidationError("One or more contacts not found.")
-#         return value
-
-#     def create(self, validated_data):
-#         contact_ids = validated_data.pop('contacts')
-#         user = UserProfile.objects.create(**validated_data)
-#         test_contact_instances = Contact.objects.filter(id__in=test_contacts)
-#         user.contacts.set(test_contact_instances)
-#         if contact_ids:
-#             additional_contacts = Contact.objects.filter(id__in=contact_ids)
-#             user.contacts.add(*additional_contacts)
-#         return user
-
-
-# class RegistrationSerializer(serializers.Serializer):
-
-#     repeated_password = serializers.CharField(write_only=True)
-
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'password', 'repeated_password']
-#         extra_kwargs = {'password': {'write_only': True}}
-
-#     def save(self):
-#         pw = self.validated_data['password']
-#         repeated_pw = self.validated_data['repeated_password']
-#         if pw != repeated_pw:
-#             raise serializers.ValidationError("Passwords don't match.")
-
-#         account = User(username=self.validated_data['username'], email=self.validated_data['email'])
-#         account.set_password(pw)
-#         account.save()
-#         return account
-
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
     email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, )
 
     class Meta:
         model = User
@@ -109,7 +73,9 @@ class RegistrationSerializer(serializers.Serializer):
                     description=task_data['description'],
                     category=category,
                     date=task_data['date'],
-                    priority=task_data['priority']
+                    priority=task_data['priority'],
+                    status=task_data['status'],
+                    user=user_profile
                 )
 
                 for subtask_data in task_data.get('subtasks', []):
@@ -142,19 +108,16 @@ class EmailAuthTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-
         if email and password:
             try:
                 user = User.objects.get(email=email)
                 username = user.username 
             except User.DoesNotExist:
                 raise serializers.ValidationError("Benutzer mit dieser E-Mail existiert nicht.")
-
             user = authenticate(username=username, password=password)
             if not user:
                 raise serializers.ValidationError("Ungültige Anmeldedaten.")
         else:
             raise serializers.ValidationError("E-Mail und Passwort sind erforderlich.")
-
         attrs['user'] = user
         return attrs

@@ -98,6 +98,7 @@ test_tasks = [
                     {"checked": False, "task": "Implement Recipe Recommendation"},
                     {"checked": True, "task": "Start Page Layout"},
                 ],
+                "status": 0,
             },
             {
                 "id": 2453,
@@ -115,6 +116,7 @@ test_tasks = [
                     {"checked": False, "task": "Implement Recipe Recommendation"},
                     {"checked": True, "task": "Start Page Layout"},
                 ],
+                "status": 0,
             },
             {
                 "id": 8945,
@@ -132,6 +134,7 @@ test_tasks = [
                     {"checked": False, "task": "Implement Recipe Recommendation"},
                     {"checked": True, "task": "Start Page Layout"},
                 ],
+                "status": 0,
             },
         ],
     },
@@ -153,6 +156,7 @@ test_tasks = [
                     {"checked": False, "task": "Implement Recipe Recommendation"},
                     {"checked": True, "task": "Start Page Layout"},
                 ],
+                "status": 1,
             },
             {
                 "id": 9876,
@@ -170,6 +174,7 @@ test_tasks = [
                     {"checked": False, "task": "Fix CSS Bugs"},
                     {"checked": False, "task": "Test on Devices"},
                 ],
+                "status": 1,
             },
         ],
     },
