@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from tasks_app.models import Task, Subtask, AssignedContact
 from contacts_app.models import Contact
+from django.core.exceptions import ObjectDoesNotExist
+from users_app.models import UserProfile
 
 class SubtaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,17 +33,28 @@ class TaskSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         subtasks_data = validated_data.pop('subtasks_data', [])  
         assigned_data = validated_data.pop('assigned_data', []) 
+        user = self.context['request'].user 
         task = Task.objects.create(**validated_data)
+
         for subtask_data in subtasks_data:
             Subtask.objects.create(task=task, **subtask_data)
+
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError("User profile not found.")
+
+        user_contacts = user_profile.contacts.all()
+
         for assigned in assigned_data:
             contact_name = assigned.get('name')
             contact_color = assigned.get('color')
+            contact_id = assigned.get('id')
             try:
-                contact = Contact.objects.get(name=contact_name)
+                contact = user_contacts.get(name=contact_name)
                 AssignedContact.objects.create(task=task, contact=contact, color=contact_color)
             except Contact.DoesNotExist:
-                raise serializers.ValidationError(f"Contact '{contact_name}' does not exist.")
+                raise serializers.ValidationError(f"Contact '{contact_name}' does not exist or does not belong to the current user.")
         return task
     
     def update(self, instance, validated_data):
@@ -69,11 +82,17 @@ class TaskSerializer(serializers.ModelSerializer):
                 Subtask.objects.create(task=instance, **subtask_data)
 
     def update_or_create_assignments(self, instance, assigned_data):
+        user = self.context['request'].user
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+        except UserProfile.DoesNotExist:
+            raise serializers.ValidationError("User profile not found.")
+        user_contacts = user_profile.contacts.all()
         for assigned in assigned_data:
             contact_name = assigned.get('name')
             contact_color = assigned.get('color')
             try:
-                contact = Contact.objects.get(name=contact_name)
+                contact = user_contacts.get(name=contact_name)
                 AssignedContact.objects.update_or_create(
                     task=instance,
                     contact=contact,
@@ -81,7 +100,8 @@ class TaskSerializer(serializers.ModelSerializer):
                 )
             except Contact.DoesNotExist:
                 raise serializers.ValidationError(
-                    f"Contact '{contact_name}' does not exist."
+                    f"Contact '{contact_name}' does not exist or does not belong to the current user."
                 )
+
 
 
