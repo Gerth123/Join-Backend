@@ -36,10 +36,3 @@
 
 * **Database:**  
   * SQLite for development.
-
-### Installation and Setup  
-
-1. **Clone the Repository:**  
-   ```bash  
-   git clone https://github.com/your-username/join-kanban.git  
-   cd join-kanban  
