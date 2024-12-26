@@ -12,7 +12,7 @@ from rest_framework.exceptions import NotFound
 @permission_classes([IsStaffOrReadOnly | IsAuthenticated])
 def all_tasks(request):
     if request.method == 'GET':
-        serializer = TaskSerializer(Task.objects.all(), many=True)
+        serializer = TaskSerializer(Task.objects.all(), many=True, context={'request': request})
         return Response(serializer.data)
 
     if request.method == 'POST':
@@ -32,12 +32,12 @@ def single_task(request, pk):
 
     if request.method == 'GET':
         task = Task.objects.get(pk=pk)
-        serializer = TaskSerializer(task)
+        serializer = TaskSerializer(task, context={'request': request})
         return Response(serializer.data)
     
     if request.method == 'PUT':
         task = Task.objects.get(pk=pk)
-        serializer = TaskSerializer(task, data=request.data, partial=True)
+        serializer = TaskSerializer(task, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -77,7 +77,7 @@ def single_subtask(request, task_id, subtask_id):
         return Response({"detail": "Subtask not found"}, status=404)
 
     if request.method == 'GET':
-        serializer = SubtaskSerializer(subtask)
+        serializer = SubtaskSerializer(subtask, context={'request': request, 'task': task})
         return Response(serializer.data)
 
     if request.method == 'DELETE':
