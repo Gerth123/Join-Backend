@@ -2,17 +2,19 @@ from rest_framework import generics
 from users_app.models import UserProfile
 from .serializers import *
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import status
 
 class UserProfileList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer    
 
 class UserProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
@@ -66,9 +68,3 @@ class CustomLoginView(ObtainAuthToken):
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
-# def test_view_for_html(request):
-#     return render(request, 'users_app/test.html', {'test_contacts': test_contacts})

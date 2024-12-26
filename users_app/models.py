@@ -18,9 +18,15 @@ class UserProfile(models.Model):
         verbose_name_plural = 'Users'
 
     def __str__(self):
+        '''
+        Return the username of the user.
+        '''
         return self.user.username
 
     def save(self, *args, **kwargs):
+        '''
+        Generate a random color if no color is provided.
+        '''
         if self.user.email:
             self.user.email = self.user.email.lower()
             self.user.save()

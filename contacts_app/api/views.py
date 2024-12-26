@@ -24,10 +24,16 @@ from .permissions import IsStaffOrReadOnly, IsAdminForDeleteOrPatchAndReadOnly, 
 @permission_classes([IsStaffOrReadOnly | IsAuthenticated])
 def all_contacts(request):
     if request.method == 'GET':
+        '''
+        Return a list of all contacts.
+        '''
         serializer = ContactSerializer(Contact.objects.all(), many=True)
         return Response(serializer.data)
 
     if request.method == 'POST':
+        '''
+        Create a new contact.
+        '''
         user_profile = UserProfile.objects.get(user=request.user)
         data = request.data.copy() 
         data['user'] = user_profile.id  
@@ -43,11 +49,17 @@ def all_contacts(request):
 def single_contact(request, pk):
 
     if request.method == 'GET':
+        '''
+        Return a single contact.
+        '''
         contact = Contact.objects.get(pk=pk)
         serializer = ContactSerializer(contact)
         return Response(serializer.data)
     
     if request.method == 'PUT':
+        '''
+        Update a contact.
+        '''
         contact = Contact.objects.get(pk=pk)
         serializer = ContactSerializer(contact, data=request.data, partial=True)
         if serializer.is_valid():
@@ -56,22 +68,20 @@ def single_contact(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     if request.method == 'DELETE':
+        '''
+        Delete a contact.
+        '''
         contact = Contact.objects.get(pk=pk)
         contact.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class RedirectToContact(RedirectView):
-    pattern_name = 'all-test-contacts'
-
-    def get_redirect_url(self, *args, **kwargs):
-        return super().get_redirect_url(*args, **kwargs)
-
-
 class RedirectToSingleContact(RedirectView):
-    def get_redirect_url(self, *args, **kwargs):
-        contact_id = kwargs.get('contact_id')
 
+    def get_redirect_url(self, *args, **kwargs):
+        '''
+        Redirect to a single contact.
+        '''
+        contact_id = kwargs.get('contact_id')
         try:
             contact = Contact.objects.all()[contact_id]
             contact_name = contact.name
@@ -86,6 +96,9 @@ class RedirectToSingleContact(RedirectView):
 
 class SingleContactView(View):
     def get(self, request, contact_slug):
+        '''
+        Return a single contact.
+        '''
         contact_match = {"result": False}
         contact_slug = contact_slug.lower()
         for contact in Contact.objects.all().values("id", "name", "email", "phone", "color"):
@@ -96,6 +109,9 @@ class SingleContactView(View):
         return JsonResponse(contact_match, safe=False)
     
     def put(self, request, contact_slug):
+        '''
+        Update a contact.
+        '''
         try:
             data = json.loads(request.body)
             if "name" in data and "email" in data and "phone" in data:
@@ -112,36 +128,14 @@ class SingleContactView(View):
         
 class SingleContactDeleteView(View):
     def delete(self, request, contact_id):
+        '''
+        Delete a contact.
+        '''
         try:
             Contact.objects.filter(id=contact_id).delete()
             return JsonResponse({"result": True, "message": "Kontakt erfolgreich gel÷scht"}, safe=False)
         except Exception as e:
             return JsonResponse({"result": False, "message": str(e)}, status=400)
-
-
-class AllContactsView(View):
-
-    def get(self, request):
-        contacts = Contact.objects.all().values("id", "name", "email", "phone", "color")
-        return JsonResponse(list(contacts), safe=False)
-
-    def post(self, request):
-        try:
-            data = json.loads(request.body)
-            if "name" in data and "email" in data and "phone" in data:
-                Contact.objects.create(
-                    name=data["name"],
-                    email=data["email"],
-                    phone=data["phone"],
-                )
-                return JsonResponse({"result": True, "message": "Kontakt erfolgreich hinzugefügt"}, safe=False)
-            else:
-                return HttpResponseBadRequest("Erforderliche Felder fehlen")
-        except json.JSONDecodeError:
-            return HttpResponseBadRequest("Ungültige JSON-Daten")
-        except Exception as e:
-            return JsonResponse({"result": False, "message": str(e)}, status=400)
-
 
 class AllContactsListView(ListView):
     model = Contact
@@ -149,6 +143,9 @@ class AllContactsListView(ListView):
 
 class AllContactsListSearchView(AllContactsListView):
     def get_queryset(self):
+        '''
+        Filter contacts by name.
+        '''
         name = self.kwargs.get('name')
         return Contact.objects.filter(name__icontains=name)
     
@@ -157,6 +154,9 @@ class ContactDetailView(DetailView):
     template_name = 'contacts_app/contact-detail.html'
 
     def get_object(self):
+        '''
+        Update the last_accessed field of the contact.
+        '''
         obj = super().get_object()
         obj.last_accessed = timezone.now()
         return obj
