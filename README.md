@@ -35,7 +35,7 @@
   * Python with Django and Django REST Framework (DRF) to handle the application's logic and APIs.  
 
 * **Database:**  
-  * SQLite for development, with options to switch to PostgreSQL or MySQL in production.  
+  * SQLite for development.
 
 ### Installation and Setup  
 
