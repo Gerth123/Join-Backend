@@ -16,5 +16,4 @@ urlpatterns = [
     path('contact/<int:pk>/', ContactDetailView.as_view()),
     path("", all_contacts),
     path ('single/<int:pk>/', single_contact),
-    path('test/', test_view_for_html, name='test'),
 ]

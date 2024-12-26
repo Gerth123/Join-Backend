@@ -1,11 +1,16 @@
 import random
 
+
 def generate_random_color():
+    '''
+    Generate a random color.
+    '''
     letters = "0123456789ABCDEF"
     color = "#"
     for _ in range(6):
         color += random.choice(letters)
     return color
+
 
 colors = [generate_random_color() for _ in range(12)]
 
@@ -80,99 +85,88 @@ test_contacts = [
 
 test_tasks = [
     {
-        "id": 1,
-        "items": [
-            {
-                "id": 7955,
-                "category": "user story",
-                "title": "Kochwelt Page & Recipe Recommender",
-                "description": "Build start page with recipe recommendation.",
-                "assigned": [
+        "category": "user story",
+        "title": "Kochwelt Page & Recipe Recommender",
+        "description": "Build start page with recipe recommendation.",
+        "assigned": [
                     {"color": colors[5], "name": "Emmanuel Mauer"},
                     {"color": colors[6], "name": "Marcel Bauer"},
                     {"color": colors[7], "name": "Tatjana Wolf"},
-                ],
-                "date": "2024-06-15",
-                "priority": "medium",
-                "subtasks": [
-                    {"checked": False, "task": "Implement Recipe Recommendation"},
-                    {"checked": True, "task": "Start Page Layout"},
-                ],
-            },
-            {
-                "id": 2453,
-                "category": "technical task",
-                "title": "HTML Base Template Creation",
-                "description": "Create reusable HTML base templates...",
-                "assigned": [
+        ],
+        "date": "2024-06-15",
+        "priority": "medium",
+        "subtasks": [
+            {"checked": False, "task": "Implement Recipe Recommendation"},
+            {"checked": True, "task": "Start Page Layout"},
+        ],
+        "status": 0,
+    },
+    {
+        "category": "technical task",
+        "title": "HTML Base Template Creation",
+        "description": "Create reusable HTML base templates...",
+        "assigned": [
                     {"color": colors[3], "name": "David Eisenberg"},
                     {"color": colors[2], "name": "Benedikt Ziegler"},
                     {"color": colors[0], "name": "Anton Mayer"},
-                ],
-                "date": "2024-06-15",
+        ],
+        "date": "2024-06-15",
                 "priority": "low",
                 "subtasks": [
                     {"checked": False, "task": "Implement Recipe Recommendation"},
                     {"checked": True, "task": "Start Page Layout"},
-                ],
-            },
-            {
-                "id": 8945,
-                "category": "user story",
-                "title": "Daily Kochwelt Recipe",
-                "description": "Implement daily recipe and portion calculator...",
-                "assigned": [
+        ],
+        "status": 0,
+    },
+    {
+        "category": "user story",
+        "title": "Daily Kochwelt Recipe",
+        "description": "Implement daily recipe and portion calculator...",
+        "assigned": [
                     {"color": colors[5], "name": "Emmanuel Mauer"},
                     {"color": colors[0], "name": "Anton Mayer"},
                     {"color": colors[7], "name": "Tatjana Wolf"},
-                ],
-                "date": "2024-06-15",
+        ],
+        "date": "2024-06-15",
                 "priority": "medium",
                 "subtasks": [
                     {"checked": False, "task": "Implement Recipe Recommendation"},
                     {"checked": True, "task": "Start Page Layout"},
-                ],
-            },
         ],
+        "status": 1,
     },
+
     {
-        "id": 2,
-        "items": [
-            {
-                "id": 7489,
-                "category": "technical task",
-                "title": "CSS Architecture Planning",
-                "description": "Define CSS naming conventions and structure...",
-                "assigned": [
+        "category": "technical task",
+        "title": "CSS Architecture Planning",
+        "description": "Define CSS naming conventions and structure...",
+        "assigned": [
                     {"color": colors[10], "name": "Stefan Meier"},
                     {"color": colors[2], "name": "Benedikt Ziegler"},
-                ],
-                "date": "2024-06-15",
+        ],
+        "date": "2024-06-15",
                 "priority": "urgent",
                 "subtasks": [
                     {"checked": False, "task": "Implement Recipe Recommendation"},
                     {"checked": True, "task": "Start Page Layout"},
-                ],
-            },
-            {
-                "id": 9876,
-                "category": "technical task",
-                "title": "Fix Responsive Layout Issues",
-                "description": "Resolve layout issues on mobile devices.",
-                "assigned": [
+        ],
+        "status": 1,
+    },
+    {
+        "category": "technical task",
+        "title": "Fix Responsive Layout Issues",
+        "description": "Resolve layout issues on mobile devices.",
+        "assigned": [
                     {"color": colors[10], "name": "Stefan Meier"},
                     {"color": colors[3], "name": "David Eisenberg"},
-                ],
-                "date": "2024-06-15",
+        ],
+        "date": "2024-06-15",
                 "priority": "urgent",
                 "subtasks": [
-                    {"checked": False, "task": "Identify Issues"},
-                    {"checked": False, "task": "Fix CSS Bugs"},
-                    {"checked": False, "task": "Test on Devices"},
-                ],
-            },
+                    {"checked": True, "task": "Identify Issues"},
+                    {"checked": True, "task": "Fix CSS Bugs"},
+                    {"checked": True, "task": "Test on Devices"},
         ],
+        "status": 2,
     },
-    {"id": 3, "items": ""},
-    {"id": 4, "items": ""},
 ]

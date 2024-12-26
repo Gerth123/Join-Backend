@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
 def validate_no_html(value):
+        '''
+        Validate that the field does not contain HTML tags.
+        '''
         errors = []
 
         if '<' in value:
